@@ -54,7 +54,7 @@ export const Colors = {
     yellow: ['#FFE600', '#FFC400'],
     dark: ['#000000', '#121212'],
   },
-  shadow: {
+  boxShadow: {
     color: '#000000',
     opacity: 0.3,
   },
