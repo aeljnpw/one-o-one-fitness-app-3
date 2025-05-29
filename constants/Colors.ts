@@ -61,5 +61,8 @@ export const Colors = {
   overlay: 'rgba(0, 0, 0, 0.7)',
   divider: '#333333',
 };
-
+  shadow: {
+    color: '#000000',
+    opacity: 0.3,
+  };
 export default Colors;
