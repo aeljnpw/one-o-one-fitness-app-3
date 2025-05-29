@@ -129,9 +129,11 @@ export default function LoginScreen() {
               error={passwordError}
             />
             
-            <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>gym.dreamscapereality.in</Text>
-            </TouchableOpacity>
+            <Link href="./forgot-password" asChild>
+              <TouchableOpacity style={styles.forgotPassword}>
+                <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </Link>
           </View>
           
           <Button
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.secondary,
     borderRadius: Layout.Radius.l,
     padding: Layout.Spacing.l,
-    shadowColor: Colors.shadow.color,
+    shadowColor: Colors.boxShadow.color,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
