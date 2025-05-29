@@ -63,6 +63,6 @@ export const Colors = {
 };
   shadow: {
     color: '#000000',
-    opacity: 0.3,
+    opacity: 0.3
   };
 export default Colors;
