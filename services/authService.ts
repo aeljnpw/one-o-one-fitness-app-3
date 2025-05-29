@@ -24,7 +24,7 @@ export const loginUser = async (email: string, password: string): Promise<AuthRe
       // The request was made but no response was received
       throw new Error('Network error. Please check your connection.');
     } else {
-      // Something happened in setting up the request that triggered an Error
+      // Something hetting up the request that triggered an Error
       throw new Error('An unexpected error occurred');
     }
   }

@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check for existing token on app load
+  // Check for existing token on 
   useEffect(() => {
     const loadToken = async () => {
       try {

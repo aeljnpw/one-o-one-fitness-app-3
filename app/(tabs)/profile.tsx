@@ -76,12 +76,9 @@ export default function ProfileScreen() {
     >
       <View style={[
         styles.menuIconContainer,
-        tintColor ? { backgroundColor: `${tintColor}20` } : {}
+        tintColor ? { backgroundColor: `${tintColor}20` } : {},
       ]}>
-        {React.cloneElement(icon as React.ReactElement, { 
-          color: tintColor || Colors.text.primary,
-          size: 20,
-        })}
+        
       </View>
       
       <View style={styles.menuTextContainer}>
@@ -143,9 +140,9 @@ export default function ProfileScreen() {
             })}
           </View>
           
-          {/* App Settings Section */}
+          {/*  Settings Section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>App Settings</Text>
+            <Text style={styles.sectionTitle}> Settings</Text>
             
             {renderMenuItem({
               icon: <Moon />,
@@ -158,7 +155,7 @@ export default function ProfileScreen() {
             {renderMenuItem({
               icon: <Settings />,
               title: 'Preferences',
-              subtitle: 'Customize your app experience',
+              subtitle: 'Customize your  experience',
               onPress: () => {},
             })}
             

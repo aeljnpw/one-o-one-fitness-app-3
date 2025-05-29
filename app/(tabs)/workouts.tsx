@@ -57,14 +57,14 @@ export default function WorkoutsScreen() {
   useEffect(() => {
     let filtered = [...workouts];
     
-    // Apply category filter if not "All"
+    // ter if not "All"
     if (selectedCategory !== 'All') {
       filtered = filtered.filter(workout => 
         workout.name.includes(selectedCategory) // This is a simplification - your actual data might have a category field
       );
     }
     
-    // Apply search filter
+    // r
     if (searchQuery.trim()) {
       filtered = filtered.filter(workout =>
         workout.name.toLowerCase().includes(searchQuery.toLowerCase())

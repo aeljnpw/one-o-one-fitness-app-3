@@ -1,12 +1,12 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
-// Create a base API client that can be imported and used throughout the app
+// Create a base API client that can be imported and used throughout the 
 const apiClient = axios.create({
   // This URL should be replaced with your actual API URL
-  baseURL: 'https://api.yourgymapp.com',
+  baseURL: 'https://api.yourgym',
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'n',
   },
 });
 

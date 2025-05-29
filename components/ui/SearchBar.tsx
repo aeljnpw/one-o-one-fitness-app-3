@@ -104,8 +104,6 @@ function interpolateColor(
   outputRange: string[]
 ) {
   'worklet';
-  // Simple implementation that assumes hex colors
-  // In a real app, use a proper color interpolation library
   const color1 = outputRange[0];
   const color2 = outputRange[1];
   return value === 0 ? color1 : color2;
