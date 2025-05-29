@@ -130,7 +130,7 @@ export default function LoginScreen() {
             />
             
             <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+              <Text style={styles.forgotPasswordText}>gym.dreamscapereality.in</Text>
             </TouchableOpacity>
           </View>
           
