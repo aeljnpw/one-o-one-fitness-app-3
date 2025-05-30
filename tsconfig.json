@@ -1,7 +1,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "jsx": "react-jsx", // Corrected: Only one jsx entry. Changed to react-jsx as per your earlier file.
+    "jsx": "react-jsx",
     "strict": true,
     "paths": {
       "@/*": ["./*"]
