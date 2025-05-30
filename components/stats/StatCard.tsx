@@ -17,7 +17,7 @@ interface StatCardProps {
   value: number | string;
   icon: React.ReactNode;
   unit?: string;
-  gradientColors?: string[];
+  gradientColors?: readonly [string, string, ...string[]];
   animateIn?: boolean;
 }
 
@@ -45,7 +45,7 @@ const StatCard: React.FC<StatCardProps> = ({
     iconScale.value = withRepeat(
       withDelay(
         1000,
-        withTiming(1.1, { duration: 1000, easing: Easing.inOut(Easing.sine) })
+        withTiming(1.1, { duration: 1000, easing: Easing.inOut(Easing.sin) })
       ),
       -1,
       true

@@ -31,7 +31,7 @@ interface ButtonProps extends TouchableOpacityProps {
   fullWidth?: boolean;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  gradientColors?: string[];
+  gradientColors?: readonly [string, string, ...string[]];
 }
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);

@@ -24,6 +24,7 @@ interface InputProps extends TextInputProps {
   rightIcon?: React.ReactNode;
   containerStyle?: any;
   showPasswordToggle?: boolean;
+  disabled?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -38,6 +39,7 @@ const Input: React.FC<InputProps> = ({
   value,
   onFocus,
   onBlur,
+  disabled,
   ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -81,6 +83,10 @@ const Input: React.FC<InputProps> = ({
   const showToggle = showPasswordToggle && (secureTextEntry || isPasswordVisible);
   const effectiveSecureTextEntry = secureTextEntry && !isPasswordVisible;
   
+  const inputStyle = {
+    ...animatedBorderStyle,
+  };
+  
   return (
     <View style={[styles.container, containerStyle]}>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -88,8 +94,9 @@ const Input: React.FC<InputProps> = ({
       <Animated.View
         style={[
           styles.inputContainer,
-          error && styles.inputError,
-          animatedBorderStyle,
+          inputStyle,
+          error ? styles.inputError : {},
+          disabled ? styles.inputDisabled : {},
         ]}
       >
         {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
@@ -97,8 +104,8 @@ const Input: React.FC<InputProps> = ({
         <TextInput
           style={[
             styles.input,
-            leftIcon && styles.inputWithLeftIcon,
-            (rightIcon || showToggle) && styles.inputWithRightIcon,
+            leftIcon ? styles.inputWithLeftIcon : false,
+            (rightIcon || showToggle) ? styles.inputWithRightIcon : false,
           ]}
           placeholder={placeholder}
           placeholderTextColor={Colors.input.placeholder}
@@ -167,6 +174,9 @@ const styles = StyleSheet.create({
   },
   inputError: {
     borderColor: Colors.input.border.error,
+  },
+  inputDisabled: {
+    // Add appropriate styles for disabled state
   },
   iconLeft: {
     paddingHorizontal: Layout.Spacing.m,

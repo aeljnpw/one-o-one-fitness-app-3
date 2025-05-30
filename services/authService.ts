@@ -12,6 +12,7 @@ export const loginUser = async (email: string, password: string): Promise<{ toke
     if (error) throw new Error(error.message);
 
     if (!data.session) throw new Error('No session returned');
+    if (!data.user) throw new Error('User not found after login');
 
     // Get user profile data
     const { data: profile, error: profileError } = await supabase
@@ -53,6 +54,7 @@ export const registerUser = async (
 
     if (error) throw new Error(error.message);
     if (!data.session) throw new Error('No session returned');
+    if (!data.user) throw new Error('User not created after sign up');
 
     // Create user profile
     const { error: profileError } = await supabase.from('user_profiles').insert({

@@ -53,16 +53,17 @@ export const Colors = {
     inactive: '#777777',
   },
   gradient: {
-    yellow: ['#FFE600', '#FFC400'],
-    dark: ['#000000', '#121212'],
+    yellow: ['#FFE600', '#FFC400'] as const,
+    dark: ['#000000', '#121212'] as const,
   },
-  // boxShadow: { // This was named boxShadow, if you intend to use Colors.shadow.color, it should be 'shadow'
-  //   color: '#000000',
-  //   opacity: 0.3,
-  // },
+  
+   boxShadow: { // This was named boxShadow, if you intend to use Colors.shadow.color, it should be 'shadow'
+     color: '#000000',
+     opacity: 0.3,
+   },
   shadow: { // Correctly named and placed inside the Colors object
     color: '#000000',
-    // opacity: 0.3 // You can keep opacity here or access it separately if needed
+    opacity: 0.3 // You can keep opacity here or access it separately if needed
                   // If you access it as Colors.shadow.opacity later.
                   // The error was only about 'color', so ensuring 'color' is here is key.
   },

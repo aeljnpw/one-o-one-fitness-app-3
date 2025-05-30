@@ -11,5 +11,5 @@ export interface User {
   totalWorkouts: number;
   totalCaloriesBurned: number;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }

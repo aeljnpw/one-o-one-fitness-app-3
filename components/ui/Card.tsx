@@ -30,7 +30,7 @@ interface CardProps {
   subtitleStyle?: StyleProp<TextStyle>;
   imageStyle?: StyleProp<ImageStyle>;
   gradient?: boolean;
-  gradientColors?: string[];
+  gradientColors?: readonly [string, string, ...string[]];
   disabled?: boolean;
 }
 
