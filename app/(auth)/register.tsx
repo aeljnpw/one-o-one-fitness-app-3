@@ -284,7 +284,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background.secondary,
     borderRadius: Layout.Radius.l,
     padding: Layout.Spacing.l,
-    shadowColor: Colors.shadow.color,
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 20,

@@ -1,3 +1,5 @@
+// constants/Colors.ts
+
 export const Colors = {
   background: {
     primary: '#000000',
@@ -54,9 +56,15 @@ export const Colors = {
     yellow: ['#FFE600', '#FFC400'],
     dark: ['#000000', '#121212'],
   },
-  boxShadow: {
+  // boxShadow: { // This was named boxShadow, if you intend to use Colors.shadow.color, it should be 'shadow'
+  //   color: '#000000',
+  //   opacity: 0.3,
+  // },
+  shadow: { // Correctly named and placed inside the Colors object
     color: '#000000',
-    opacity: 0.3,
+    // opacity: 0.3 // You can keep opacity here or access it separately if needed
+                  // If you access it as Colors.shadow.opacity later.
+                  // The error was only about 'color', so ensuring 'color' is here is key.
   },
   overlay: 'rgba(0, 0, 0, 0.7)',
   divider: '#333333',
