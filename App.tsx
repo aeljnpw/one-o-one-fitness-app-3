@@ -6,125 +6,173 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
-  ScrollView,
+  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  useColorScheme,
+  TouchableOpacity,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {HomeScreen} from './src/screens/HomeScreen';
+import {FeedScreen} from './src/screens/FeedScreen';
+import {TrainScreen} from './src/screens/TrainScreen';
+import {NutritionScreen} from './src/screens/NutritionScreen';
+import {ProfileScreen} from './src/screens/ProfileScreen';
+import {BottomTabBar} from './src/components/BottomTabBar';
+import type {RootStackParamList} from './src/types/navigation';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
+function WelcomeScreen({navigation}: any) {
   const isDarkMode = useColorScheme() === 'dark';
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <SafeAreaView style={[styles.container, {backgroundColor: isDarkMode ? '#000' : '#fff'}]}>
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        backgroundColor={isDarkMode ? '#000' : '#fff'}
+      />
+      <View style={styles.content}>
+        <Text style={styles.title}>OneOOne Fitness</Text>
+        <Text style={styles.subtitle}>Your Personal Fitness Journey Starts Here</Text>
+        
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={() => navigation.navigate('MainTabs')}>
+            <Text style={styles.buttonText}>Get Started</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.button, styles.secondaryButton]}
+            onPress={() => navigation.navigate('About')}>
+            <Text style={styles.secondaryButtonText}>Learn More</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+function TabNavigator() {
+  return (
+    <Tab.Navigator
+      tabBar={props => <BottomTabBar {...props} />}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#000',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Feed"
+        component={FeedScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Train"
+        component={TrainScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Nutrition"
+        component={NutritionScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{headerShown: false}}
+      />
+    </Tab.Navigator>
   );
 }
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the recommendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
-
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#000',
+          },
+          headerTintColor: '#fff',
+          contentStyle: {
+            backgroundColor: '#000',
+          },
+        }}>
+        <Stack.Screen
+          name="MainTabs"
+          component={TabNavigator}
+          options={{headerShown: false}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
   },
-  sectionTitle: {
-    fontSize: 24,
+  content: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FF6B6B',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 15,
+  },
+  button: {
+    backgroundColor: '#FF6B6B',
+    padding: 15,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
     fontWeight: '600',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#FF6B6B',
   },
-  highlight: {
-    fontWeight: '700',
+  secondaryButtonText: {
+    color: '#FF6B6B',
+    fontSize: 18,
+    fontWeight: '600',
   },
 });
 
