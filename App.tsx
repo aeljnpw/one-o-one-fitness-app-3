@@ -18,16 +18,20 @@ import {
   useColorScheme,
   TouchableOpacity,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import {HomeScreen} from './src/screens/HomeScreen';
-import {FeedScreen} from './src/screens/FeedScreen';
-import {TrainScreen} from './src/screens/TrainScreen';
+import {Home} from './src/screens/Home';
+import {Feed} from './src/screens/Feed';
+import {Workouts} from './src/screens/Workouts';
+import {WorkoutsTab} from './src/screens/WorkoutsTab';
+import {ExerciseDetail} from './src/screens/ExerciseDetail';
 import {NutritionScreen} from './src/screens/NutritionScreen';
 import {ProfileScreen} from './src/screens/ProfileScreen';
+import {AuthScreen} from './src/screens/AuthScreen';
 import {BottomTabBar} from './src/components/BottomTabBar';
-import type {RootStackParamList} from './src/types/navigation';
+import type {RootStackParamList, TabParamList} from './src/types/navigation';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function WelcomeScreen({navigation}: any) {
@@ -76,17 +80,17 @@ function TabNavigator() {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={Home}
         options={{headerShown: false}}
       />
       <Tab.Screen
         name="Feed"
-        component={FeedScreen}
+        component={Feed}
         options={{headerShown: false}}
       />
       <Tab.Screen
-        name="Train"
-        component={TrainScreen}
+        name="Workouts"
+        component={WorkoutsTab}
         options={{headerShown: false}}
       />
       <Tab.Screen
@@ -105,24 +109,46 @@ function TabNavigator() {
 
 function App(): React.JSX.Element {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#000',
-          },
-          headerTintColor: '#fff',
-          contentStyle: {
-            backgroundColor: '#000',
-          },
-        }}>
-        <Stack.Screen
-          name="MainTabs"
-          component={TabNavigator}
-          options={{headerShown: false}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Auth"
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#000000',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}>
+          <Stack.Screen
+            name="Auth"
+            component={AuthScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="MainTabs"
+            component={TabNavigator}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen 
+            name="Workouts" 
+            component={Workouts}
+            options={{
+              title: 'Exercises'
+            }}
+          />
+          <Stack.Screen 
+            name="ExerciseDetail" 
+            component={ExerciseDetail}
+            options={({ route }) => ({
+              title: route.params?.exercise?.name || 'Exercise Detail'
+            })}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
