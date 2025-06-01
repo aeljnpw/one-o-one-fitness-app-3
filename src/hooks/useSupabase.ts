@@ -52,7 +52,7 @@ export const useEquipments = () => {
       const { data, error: err } = await supabase
         .from('equipment')
         .select('*')
-        .limit(10);
+        .order('name');
 
       if (err) {
         throw err;
@@ -60,7 +60,7 @@ export const useEquipments = () => {
 
       setEquipments(data || []);
       setError(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching equipment:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch equipment');
       setEquipments([]);

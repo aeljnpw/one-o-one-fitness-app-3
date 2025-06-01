@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,6 @@ import {
   Image,
   TouchableOpacity,
   RefreshControl,
-  Dimensions,
-  ScrollView,
   Platform,
   ActivityIndicator,
   Modal,
@@ -17,40 +15,16 @@ import { useEquipments } from '../hooks/useSupabase';
 import type { Equipment, Exercise } from '../types/supabase';
 import LinearGradient from 'react-native-linear-gradient';
 import Animated, { 
-  FadeInDown,
   FadeInUp,
   Layout,
-  withSpring,
-  withTiming,
-  withSequence,
-  withDelay,
-  runOnJS,
-  EntryAnimationsValues,
-  ComplexAnimationBuilder,
 } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { supabase } from '../config/supabase';
-import { FeaturedWorkouts } from '../components/FeaturedWorkouts';
-import type { RootStackScreenProps } from '../types/navigation';
+import type { TabScreenProps } from '../types/navigation';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
-const { width } = Dimensions.get('window');
 
-const enteringSpring = (index: number) => {
-  'worklet';
-  return {
-    initialValues: {
-      opacity: 0,
-      transform: [{ translateY: 20 }],
-    },
-    animations: {
-      opacity: withDelay(index * 100, withTiming(1, { duration: 500 })),
-      transform: [{ translateY: withSpring(0) }],
-    },
-  };
-};
-
-export const Home = ({ navigation }: RootStackScreenProps<'Home'>) => {
+export const Home = ({ navigation }: TabScreenProps<'Home'>) => {
   const { equipments, loading, error, refetch } = useEquipments();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -58,29 +32,6 @@ export const Home = ({ navigation }: RootStackScreenProps<'Home'>) => {
   const [exercisesForModal, setExercisesForModal] = useState<Exercise[]>([]);
   const [loadingExercises, setLoadingExercises] = useState(false);
   const [errorExercises, setErrorExercises] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchEquipment();
-  }, []);
-
-  const fetchEquipment = async () => {
-    try {
-      setLoading(true);
-      const { data, error: err } = await supabase
-        .from('equipment')
-        .select('*')
-        .order('name');
-
-      if (err) throw err;
-      setEquipment(data || []);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching equipment:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch equipment');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const fetchExercisesForSelectedEquipment = async (equipmentId: string) => {
     try {
@@ -135,96 +86,79 @@ export const Home = ({ navigation }: RootStackScreenProps<'Home'>) => {
     </TouchableOpacity>
   );
 
-  const renderEquipmentItem = ({ item }: { item: Equipment }) => (
-    <TouchableOpacity
+  const renderEquipmentItem = ({ item, index }: { item: Equipment; index: number }) => (
+    <Animated.View
+      entering={FadeInUp.delay(index * 100).springify()}
+      layout={Layout.springify()}
       style={styles.equipmentCard}
-      onPress={() => handleEquipmentPress(item)}>
-      <Image
-        source={{ uri: item.image_url || 'https://via.placeholder.com/150' }}
-        style={styles.equipmentImage}
-        resizeMode="cover"
-      />
-      <View style={styles.equipmentContent}>
-        <Text style={styles.equipmentTitle}>{item.name}</Text>
-        <Text style={styles.equipmentCategory}>
-          <Icon name="fitness-outline" size={14} color="#4CAF50" /> {item.category}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-
-  const renderDailyProgress = () => (
-    <AnimatedView 
-      entering={FadeInDown.springify().mass(0.5)}
-      style={styles.progressContainer}
     >
-      <LinearGradient
-        colors={['#2E2E2E', '#1A1A1A']}
-        style={styles.progressCard}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.progressHeader}>
-          <Text style={styles.progressTitle}>Today's Progress</Text>
-          <Icon name="fitness" size={24} color="#FF2D55" />
-        </View>
-        <View style={styles.metricsContainer}>
-          <View style={styles.metric}>
-            <Text style={styles.metricValue}>0/3</Text>
-            <Text style={styles.metricLabel}>Workouts</Text>
+      <TouchableOpacity onPress={() => handleEquipmentPress(item)}>
+        <LinearGradient
+          colors={['#2E2E2E', '#1A1A1A']}
+          style={styles.cardGradient}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Image
+            source={{ uri: item.image_url || 'https://via.placeholder.com/200' }}
+            style={styles.equipmentImage}
+          />
+          <View style={styles.textContainer}>
+            <Text style={styles.equipmentName}>{item.name}</Text>
+            <Text style={styles.equipmentSubtext}>Tap to view exercises</Text>
           </View>
-          <View style={styles.metric}>
-            <Text style={styles.metricValue}>0</Text>
-            <Text style={styles.metricLabel}>Minutes</Text>
-          </View>
-          <View style={styles.metric}>
-            <Text style={styles.metricValue}>0</Text>
-            <Text style={styles.metricLabel}>Calories</Text>
-          </View>
-        </View>
-      </LinearGradient>
-    </AnimatedView>
+          <Icon name="chevron-forward" size={24} color="#666" />
+        </LinearGradient>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
-  if (loading) {
+  if (loading && equipments.length === 0) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#4CAF50" />
+      <View style={styles.centeredLoader}>
+        <ActivityIndicator size="large" color="#FF2D55" />
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.centered}>
-        <Icon name="alert-circle-outline" size={48} color="#FF6B6B" />
-        <Text style={styles.error}>Error: {error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={fetchEquipment}>
-          <Text style={styles.retryText}>Retry</Text>
+      <View style={styles.errorContainer}>
+        <Icon name="alert-circle" size={48} color="#FF6B6B" />
+        <Text style={styles.errorText}>Error loading equipment</Text>
+        <TouchableOpacity style={styles.reloadButton} onPress={refetch}>
+          <Text style={styles.reloadButtonText}>Reload</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Welcome Back!</Text>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.welcomeText}>Welcome back</Text>
+        <Text style={styles.headerTitle}>Let's Crush It! 💪</Text>
       </View>
 
-      <FeaturedWorkouts />
-
-      <View style={styles.section}>
+      <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Equipment</Text>
-        <FlatList
-          data={equipments}
-          renderItem={renderEquipmentItem}
-          keyExtractor={item => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.equipmentList}
-        />
+        <Text style={styles.sectionSubtitle}>Choose your workout gear</Text>
       </View>
+
+      <FlatList
+        data={equipments}
+        renderItem={renderEquipmentItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={refetch}
+            tintColor="#FFFFFF"
+          />
+        }
+      />
 
       <Modal
         animationType="slide"
@@ -272,7 +206,7 @@ export const Home = ({ navigation }: RootStackScreenProps<'Home'>) => {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -294,64 +228,94 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
-  header: {
-    padding: 20,
-    paddingTop: 60,
+  centeredLoader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000',
+  },
+  headerContainer: {
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingBottom: 20,
+  },
+  welcomeText: {
+    color: '#666',
+    fontSize: 16,
+    marginBottom: 4,
   },
   headerTitle: {
     color: 'white',
     fontSize: 32,
     fontWeight: 'bold',
   },
-  section: {
-    padding: 20,
+  sectionHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
   sectionTitle: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 4,
   },
-  equipmentList: {
-    paddingRight: 20,
+  sectionSubtitle: {
+    color: '#666',
+    fontSize: 16,
+  },
+  list: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   equipmentCard: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 12,
-    marginLeft: 16,
-    width: 200,
+    marginBottom: 16,
+    borderRadius: 16,
     overflow: 'hidden',
   },
-  equipmentImage: {
-    width: '100%',
-    height: 150,
-  },
-  equipmentContent: {
+  cardGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
   },
-  equipmentTitle: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
+  equipmentImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
   },
-  equipmentCategory: {
-    color: '#4CAF50',
+  textContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  equipmentName: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  equipmentSubtext: {
+    color: '#666',
     fontSize: 14,
   },
-  error: {
+  errorContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
     color: '#FF6B6B',
     fontSize: 16,
     marginVertical: 16,
     textAlign: 'center',
   },
-  retryButton: {
-    backgroundColor: '#FF6B6B',
+  reloadButton: {
+    backgroundColor: '#FF2D55',
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
   },
-  retryText: {
+  reloadButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
@@ -437,51 +401,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
   },
-  progressContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-  },
-  progressCard: {
-    borderRadius: 20,
-    padding: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  progressHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  progressTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  metricsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  metric: {
-    alignItems: 'center',
-  },
-  metricValue: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  metricLabel: {
-    color: '#666',
-    fontSize: 14,
+  error: {
+    color: '#FF6B6B',
+    fontSize: 16,
+    marginVertical: 16,
+    textAlign: 'center',
   },
 }); 

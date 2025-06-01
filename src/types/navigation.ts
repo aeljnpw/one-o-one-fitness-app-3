@@ -1,34 +1,24 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { Exercise } from './supabase';
 
 export type RootStackParamList = {
-  Auth: undefined;
-  MainTabs: undefined;
-  Workouts: {
-    equipmentId: string;
-  };
-  ExerciseDetail: {
-    exercise: Exercise;
-  };
-  WorkoutDetail: {
-    id: string;
-  };
-};
-
-export type TabParamList = {
   Home: undefined;
-  Feed: undefined;
-  Workouts: undefined;
-  Nutrition: undefined;
+  ExerciseDetail: { exercise: Exercise };
+  Workouts: { equipmentId: string };
   Profile: undefined;
+  Feed: undefined;
 };
 
-export type RootStackScreenProps<T extends keyof RootStackParamList> = 
-  NativeStackScreenProps<RootStackParamList, T>;
+export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
+  RootStackParamList,
+  T
+>;
 
-export type TabScreenProps<T extends keyof TabParamList> = 
-  BottomTabScreenProps<TabParamList, T>;
+export type TabScreenProps<T extends keyof RootStackParamList> = BottomTabScreenProps<
+  RootStackParamList,
+  T
+>;
 
 declare global {
   namespace ReactNavigation {
